@@ -108,4 +108,24 @@ describe Commander do
       x.should be_nil
     end
   end
+
+  it "should work with nillable types" do
+    cmd = Commander(Int32?).new
+    10.times do |x|
+      cmd.dispatch do
+        if x % 2 == 0
+          x
+        end
+      end
+    end
+
+    result = cmd.collect
+    result.size.should eq(10)
+
+    result.each do |r|
+      if !r.nil?
+        (r % 2).should eq(0)
+      end
+    end
+  end
 end
