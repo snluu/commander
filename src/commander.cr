@@ -97,11 +97,7 @@ class Commander(T)
       try = @result_ch.receive
       raise try.error.not_nil! if try.has_error?
 
-      {% if T == Nil %}
-        result << nil
-      {% else %}
-        result << try.result.not_nil!
-      {% end %}
+      result << try.result.as(T)
     end
 
     @result_ch.close
