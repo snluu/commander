@@ -9,11 +9,11 @@ Commander also allows the caller to choose the maximum concurrency for the given
 
 1. Add the dependency to your `shard.yml`:
 
-   ```yaml
-   dependencies:
-     commander:
-       github: snluu/commander
-   ```
+```yaml
+dependencies:
+  commander:
+    github: snluu/commander
+```
 
 2. Run `shards install`
 
