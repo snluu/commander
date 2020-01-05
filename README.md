@@ -5,6 +5,8 @@ then collect the result afterwards.
 
 Commander also allows the caller to choose the maximum concurrency for the given job.
 
+API doc can be found at https://www.luu.io/projects/commander/api/
+
 ## Installation
 
 1. Add the dependency to your `shard.yml`:
