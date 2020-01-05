@@ -1,0 +1,9 @@
+name: commander
+version: 0.1.0
+
+authors:
+  - Steven Luu <me@luu.io>
+
+crystal: 0.32.1
+
+license: MIT
