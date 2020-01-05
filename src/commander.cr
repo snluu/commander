@@ -5,15 +5,35 @@ class Commander(T)
   @result_ch : Channel(Commander::Try(T))
   @concurrency_ch : Channel(Nil)?
 
+  DEFAULT_RESULT_CAPACITY = 1024
+
   # Gets the number of dispatched jobs
   getter size : Int32
+
+  # Creates a new instance with a concurrency limit,
+  # using the default result capacity.
+  def self.with_concurrency_limit(max_concurrency)
+    new(DEFAULT_RESULT_CAPACITY, max_concurrency)
+  end
+
+  # Creates a new instance with the given result capacity,
+  # without concurrency limit.
+  def self.with_capacity(result_capacity)
+    new(result_capacity, 0)
+  end
+
+  # Initializes a new instance with the default result capacity,
+  # and no concurrency limit.
+  def initialize
+    initialize(DEFAULT_RESULT_CAPACITY, 0)
+  end
 
   # Initializes a new instance of this class with the given max concurrency.
   # Max concurrency will dictate the number of concurrent jobs.
   # All dispatched job will run concurrently if max concurrency is set to zero.
-  def initialize(max_concurrency = 0)
+  def initialize(result_capacity, max_concurrency)
     max_concurrency = 0 if max_concurrency < 0
-    @result_ch = Channel(Commander::Try(T)).new(1024)
+    @result_ch = Channel(Commander::Try(T)).new(result_capacity)
     @size = 0
 
     if max_concurrency > 0
@@ -26,6 +46,9 @@ class Commander(T)
     end
   end
 
+  # Dispatches the given block to run in a new fiber.
+  # **Note**: the spawned fiber will block if max concurrency is hit,
+  # and will only proceed to invoke the given block when previously spawned fibers finishes.
   def dispatch(&block : -> T)
     raise "Cannot dispatch after calling collect" if @result_ch.closed?
 
@@ -73,7 +96,12 @@ class Commander(T)
     @size.times do
       try = @result_ch.receive
       raise try.error.not_nil! if try.has_error?
-      result << try.result.not_nil!
+
+      {% if T == Nil %}
+        result << nil
+      {% else %}
+        result << try.result.not_nil!
+      {% end %}
     end
 
     @result_ch.close

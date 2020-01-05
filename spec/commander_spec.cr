@@ -28,7 +28,7 @@ describe Commander do
   end
 
   it "should respect max concurrency" do
-    cmd = Commander(Int32).new(1)
+    cmd = Commander(Int32).with_concurrency_limit(1)
     result = nil
 
     elapsed = Time.measure do
@@ -89,6 +89,23 @@ describe Commander do
 
     expect_raises Exception, "Odd number" do
       cmd.collect
+    end
+  end
+
+  it "should work with void or nil" do
+    cmd = Commander(Nil).new
+
+    10.times do |x|
+      cmd.dispatch do
+        nil
+      end
+    end
+
+    result = cmd.collect
+    result.size.should eq(10)
+
+    result.each do |x|
+      x.should be_nil
     end
   end
 end
