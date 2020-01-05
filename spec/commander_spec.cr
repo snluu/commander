@@ -22,9 +22,9 @@ describe Commander do
       result.should contain(x)
     end
 
-    # 10 seconds is a very generous buffer.
+    # 5 seconds is a very generous buffer.
     # The point is it should not take 1000 seconds
-    elapsed.should be < 10.seconds
+    elapsed.should be < 5.seconds
   end
 
   it "should respect max concurrency" do
