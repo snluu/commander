@@ -1,5 +1,7 @@
 # commander
 
+[![Build Status](https://travis-ci.org/snluu/commander.svg?branch=master)](https://travis-ci.org/snluu/commander)
+
 Commander is a simple shard that lets you dispatch many concurrent calls at once,
 then collect the result afterwards.
 
